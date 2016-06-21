@@ -1,0 +1,364 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title>Organização-CC</title>
+
+    <style>
+	
+	.node {
+		cursor: pointer;
+	}
+
+	.node circle {
+	  fill: #fff;
+	  stroke: steelblue;
+	  stroke-width: 2px;
+	}
+
+	.node text {
+	  font: 12px sans-serif;
+	}
+
+	.link {
+	  fill: none;
+	  stroke: #ccc;
+	  stroke-width: 2px;
+	}
+	
+    </style>
+
+  </head>
+
+  <body>
+
+<!-- load the d3.js library -->	
+<script src="http://d3js.org/d3.v3.min.js"></script>
+	
+<script>
+
+// ************** Generate the tree diagram	 *****************
+var topics=22;
+var count_closed = 0;
+var margin = {top: 20, right: 120, bottom: 20, left: 120},
+	width = 960 - margin.right - margin.left;
+
+function calc_height()
+{
+return 800+(((topics-count_closed)%12)*100)-(10*count_closed) - margin.top - margin.bottom;
+}
+
+var height = calc_height()
+
+	
+var i = 0,
+	duration = 750,
+	root;
+
+var tree = d3.layout.tree()
+	.size([height, width]);
+
+var diagonal = d3.svg.diagonal()
+	.projection(function(d) { return [d.y, d.x]; });
+
+var svg = d3.select("body").append("svg")
+	.attr("width", width + margin.right + margin.left)
+	.attr("height", height + margin.top + margin.bottom)
+  .append("g")
+	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                                                                          
+var treeData = [
+  {
+    "name": "CC",
+    "parent": "null",
+    "children": [
+      {
+        "name": "Algoritmos",
+        "parent": "CC",
+        "children": [
+         {"name":"Conceitos Básicos","parent": "Algoritmos",},{"name":" Técnicas de Projeto: Divisão-e-Conquista, Guloso,Recursão, Backtracking","parent": "Algoritmos",},{"name":" Notação e Análise Assintótica de pior e melhor caso","parent": "Algoritmos",},{"name":" Análise de Complexidade de Problemas: Classes de Problemas P, NP, NP-Completo e NP-Difícil.","parent": "Algoritmos"} ] },
+      
+{
+        "name": "Estruturas de Dados",
+        "parent": "CC",
+         "children": [
+          {"name": "Listas","parent": "Estruturas de Dados",},{"name":" Pilhas, Filas","parent": "Estruturas de Dados",},{"name":" Árvores: Binárias, AVL, Preto-e-Vermelho","parent": "Estruturas de Dados",},{"name":" Heaps","parent": "Estruturas de Dados",},{"name":"Tabelas Hash","parent": "Estruturas de Dados",},{"name":" Tipos Abstratos de Dados","parent": "Estruturas de Dados",},{"name":" Conjuntos","parent": "Estruturas de Dados",},{"name":" Mapas","parent": "Estruturas de Dados",},{"name":" Algoritmos de Pesquisa e Ordenação","parent": "Estruturas de Dados",},{"name":" Organização de Arquivos","parent": "Estruturas de Dados",} 
+	]
+    },
+   {
+        "name": "Engenharia de Software",
+        "parent": "CC",
+        "children": [
+          {"name":"Processos de Desenvolvimento de Software","parent": "Engenharia de Software",},{"name":"Qualidade de Software","parent": "Engenharia de Software",},{"name":"Técnicas de Planejamento e Gerenciamento de Software","parent": "Engenharia de Software",},{"name":"Engenharia de Requisitos","parent": "Engenharia de Software",},{"name":" Métodos de Análise e de Projeto de Software","parent": "Engenharia de Software",},{"name":" Verificação, Validação e Teste","parent": "Engenharia de Software",},{"name":" Manutenção","parent": "Engenharia de Software",},{"name":"Documentação","parent": "Engenharia de Software",}
+        ]
+      },
+{
+        "name": "IHC",
+        "parent": "CC",
+ "children": [
+          {"name":" Fatores Humanos em Software Interativo: Teoria, Princípios e Regras Básicas","parent": "IHC",},{"name":" Estilos Interativos","parent": "IHC",},{"name":" Linguagens de Comandos","parent": "IHC",},{"name":" Manipulação Direta","parent": "IHC",},{"name":" Dispositivos de Interação","parent": "IHC",},{"name":"Padrões para Interface","parent": "IHC",},{"name":" Usabilidade","parent": "IHC",},{"name":"Definição e Métodos de Avaliação","parent": "IHC",},{"name":" Realidade Virtual: Natureza e Benefícios","parent": "IHC",},{"name":" Componentes: Gráficos e Sons","parent": "IHC",},{"name":" A Natureza da Interação com o Usuário e Ambientes Virtuais","parent": "IHC",}
+     
+	] 
+     },
+
+{
+        "name": "Ética, Computador e Sociedade",
+        "parent": "CC",
+ "children": [
+{"name":"Aspectos sociais, econômicos, legais e profissionais de computação","parent": "Ética, Computador e Sociedade",},{"name":"Aspectos Estratégicos do Controle da Tecnologia","parent": "Ética, Computador e Sociedade",},{"name":" Ética e Responsabilidade Profissional","parent": "Ética, Computador e Sociedade",} 
+] 
+     },
+
+{
+        "name": "Sistemas Operacionais",
+        "parent": "CC",
+ "children": [
+{"name":" Gerência de processos/processador","parent": "Sistemas Operacionais",},{"name":" Comunicação","parent": "Sistemas Operacionais",},{"name":" Concorrência e Sincronização de Processos","parent": "Sistemas Operacionais",},{"name":" Gerenciamento de Memória","parent": "Sistemas Operacionais",},{"name":" Alocação de Recursos e Deadlocks","parent": "Sistemas Operacionais",},{"name":" Sistemas de Arquivos","parent": "Sistemas Operacionais",},{"name":" Gerenciamento de Dispositivos de Entrada/Saída","parent": "Sistemas Operacionais",}
+] 
+     },
+
+{
+        "name": "Arquitetura de Computadores",
+        "parent": "CC",
+ "children": [
+{"name":"Organização de Computadores","parent": "Arquitetura de Computadores",},{"name":" Conjunto de Instruções, Mecanismos de Interrupção e de Exceção","parent": "Arquitetura de Computadores",},{"name":" Barramento, Comunicações","parent": "Arquitetura de Computadores",},{"name":" Interfaces e Periféricos, Hierarquia de Memória","parent": "Arquitetura de Computadores",},{"name":" Multiprocessadores","parent": "Arquitetura de Computadores",},{"name":"Multicomputadores","parent": "Arquitetura de Computadores",},{"name":" Arquiteturas Paralelas","parent": "Arquitetura de Computadores",}
+] 
+     },
+
+{
+        "name": "Lógica e Matemática Discreta",
+        "parent": "CC",
+ "children": [
+{"name":"Cálculo Proposicional","parent": "Lógica e Matemática Discreta",},{"name":" Lógica de Primeira Ordem","parent": "Lógica e Matemática Discreta",},{"name":" Conjuntos","parent": "Lógica e Matemática Discreta",},{"name":"Relações","parent": "Lógica e Matemática Discreta",},{"name":"Funções","parent": "Lógica e Matemática Discreta",},{"name":" Ordens Parciais e Totais","parent": "Lógica e Matemática Discreta",},{"name":" Álgebra Booleana","parent": "Lógica e Matemática Discreta",},{"name":" Estruturas Algébricas","parent": "Lógica e Matemática Discreta",},{"name":" Combinatória","parent": "Lógica e Matemática Discreta",}
+] 
+     },
+
+{
+        "name": "Sistemas Digitais",
+        "parent": "CC",
+ "children": [
+{"name":"Sistemas de Numeração e Códigos","parent": "Sistemas Digitais",},{"name":" Aritmética Binária","parent": "Sistemas Digitais",},{"name":" Portas Lógicas","parent": "Sistemas Digitais",},{"name":"Análise e Projeto de Circuitos Combinacionais","parent": "Sistemas Digitais",},{"name":"Minimização por Mapa de Karnaugh","parent": "Sistemas Digitais",},{"name":" Somadores","parent": "Sistemas Digitais",},{"name":" Decodificadores","parent": "Sistemas Digitais",},{"name":" Codificadores","parent": "Sistemas Digitais",},{"name":"Multiplexadores","parent": "Sistemas Digitais",},{"name":" Demultiplexadores","parent": "Sistemas Digitais",},{"name":" Análise e Síntese de Circuitos Sequenciais","parent": "Sistemas Digitais",},{"name":" Latches e Flip-Flops","parent": "Sistemas Digitais",},{"name":" Minimização de Estado","parent": "Sistemas Digitais",},{"name":" Registradores","parent": "Sistemas Digitais",},{"name":"Registradores de Deslocamento","parent": "Sistemas Digitais",},{"name":" Dispositivos Lógicos Programáveis","parent": "Sistemas Digitais",},{"name":"Memória","parent": "Sistemas Digitais",} 
+] 
+     },
+{
+        "name": "Fundamentos e Técnicas de Programação",
+        "parent": "CC",
+ "children": [
+{"name":"Resolução Algorítmica de Problemas","parent": "Fundamentos e Técnicas de Programação",},{"name":"Desenvolvimento de Programas","parent": "Fundamentos e Técnicas de Programação",},{"name":"Recursividade","parent": "Fundamentos e Técnicas de Programação",},{"name":" Testes de Programas","parent": "Fundamentos e Técnicas de Programação",},{"name":" Metodologias de Desenvolvimento de Programas","parent": "Fundamentos e Técnicas de Programação",},{"name":" Programação Paralela e Concorrente","parent": "Fundamentos e Técnicas de Programação"}
+] 
+     },
+{
+        "name": "Paradigmas de Linguagens de Programação",
+        "parent": "CC",
+ "children": [
+{"name":"Linguagens de Programação","parent": "Paradigmas de Linguagens de Programação",},{"name":" Paradigmas/Modelos de Linguagens de Programação","parent": "Paradigmas de Linguagens de Programação",},{"name":" Linguagens imperativas","parent": "Paradigmas de Linguagens de Programação",},{"name":" Linguagens declarativas","parent": "Paradigmas de Linguagens de Programação",},{"name":"Linguagens Funcionais","parent": "Paradigmas de Linguagens de Programação",},{"name":" Linguagens orientadas a objetos","parent": "Paradigmas de Linguagens de Programação",},{"name":" Programação Paralela e Concorrente","parent": "Paradigmas de Linguagens de Programação",},{"name":" Programação Lógica","parent": "Paradigmas de Linguagens de Programação",}
+] 
+     },
+
+{
+        "name": "Redes de Computadores e Sistemas Distribuídos",
+        "parent": "CC",
+ "children": [
+{"name":"Topologias","parent": "Redes de Computadores e Sistemas Distribuídos"},{"name":" Sinalização no meio de transmissão","parent": "Redes de Computadores e Sistemas Distribuídos"},{"name":" Protocolos e serviços de comunicação","parent": "Redes de Computadores e Sistemas Distribuídos"},{"name":" Arquiteturas de protocolos","parent": "Redes de Computadores e Sistemas Distribuídos"},{"name":" Interconexão de redes","parent": "Redes de Computadores e Sistemas Distribuídos"},{"name":"Planejamento e gerência de redes","parent": "Redes de Computadores e Sistemas Distribuídos"},{"name":" Segurança e autenticação","parent": "Redes de Computadores e Sistemas Distribuídos"},{"name":" Avaliação de Desempenho- teoria das filas e cadeias de Markov","parent": "Redes de Computadores e Sistemas Distribuídos"},{"name":" Monitoração","parent": "Redes de Computadores e Sistemas Distribuídos"},{"name":"Conceitos de Sistemas Distribuídos","parent": "Redes de Computadores e Sistemas Distribuídos"},{"name":"Comunicação e Sincronização em Sistemas Distribuídos","parent": "Redes de Computadores e Sistemas Distribuídos"},{"name":" Modelos e Arquitetura de Sistemas Distribuídos","parent": "Redes de Computadores e Sistemas Distribuídos"}
+] 
+     },
+
+
+
+{
+        "name": "Linguagens Formais e Autômatos",
+        "parent": "CC",
+ "children": [
+{"name":"Gramáticas","parent": "Linguagens Formais e Autômatos",},{"name":" Linguagens Regulares, Sensíveis ao Contexto, Livres de Contexto","parent": "Linguagens Formais e Autômatos",},{"name":" Tipos de Reconhecedores","parent": "Linguagens Formais e Autômatos",},{"name":" Autômatos de Estado Finito, Determinísticos e não Determinísticos","parent": "Linguagens Formais e Autômatos",},{"name":" Máquina de Turing","parent": "Linguagens Formais e Autômatos",},{"name":" Autômatos de Pilha","parent": "Linguagens Formais e Autômatos",},{"name":" Hierarquia de Chomsky","parent":"Linguagens Formais e Autômatos",}
+] 
+     },
+
+{
+        "name": "Compiladores",
+        "parent": "CC",
+ "children": [
+{"name":"Conceituação de tradutores: compiladores, interpretadores e montadores","parent": "Compiladores",},{"name":" Fases de um compilador","parent": "Compiladores",},{"name":" Análise léxica","parent": "Compiladores",},{"name":" Análise sintática","parent": "Compiladores",},{"name":"Análise semântica","parent": "Compiladores",},{"name":" Tratamento e recuperação de erros","parent": "Compiladores",},{"name":" Geração e Otimização de Código Intermediário","parent": "Compiladores",},{"name":" Tabela de símbolos","parent": "Compiladores",},{"name":" Ambientes de run-time","parent": "Compiladores",},{"name":" Ambiente de interpretação","parent": "Compiladores",}
+] 
+     },
+
+{
+        "name": "Teoria da Computabilidade e Complexidade",
+        "parent": "CC",
+ "children": [
+{"name":"Tese de Church-Turing","parent": "Teoria da Computabilidade e Complexidade",},{"name":" Decidibilidade","parent": "Teoria da Computabilidade e Complexidade",},{"name":" Redutibilidade","parent": "Teoria da Computabilidade e Complexidade",},{"name":" Complexidade de Tempo e Espaço","parent": "Teoria da Computabilidade e Complexidade",},{"name":" Teorema da Incompletude de Gödel","parent": "Teoria da Computabilidade e Complexidade",}
+] 
+     },
+
+{
+        "name": "Inteligência Artificial e Computacional",
+        "parent": "CC",
+ "children": [
+{"name":"Linguagens Simbólicas","parent": "Inteligência Artificial e Computacional",},{"name":" Resolução de Problemas por meio de Busca","parent": "Inteligência Artificial e Computacional",},{"name":"Esquemas para representação do conhecimento: lógicos, em rede, estruturados, procedurais","parent": "Inteligência Artificial e Computacional",},{"name":" Formalismos para a representação de conhecimento incerto","parent": "Inteligência Artificial e Computacional",},{"name":" Redes Bayesianas - Conjuntos e Lógica fuzzy - Aprendizado de máquina","parent": "Inteligência Artificial e Computacional",},{"name":" Aprendizado Indutivo","parent": "Inteligência Artificial e Computacional",},{"name":" Árvores de decisão","parent": "Inteligência Artificial e Computacional",},{"name":"Redes Neurais","parent": "Inteligência Artificial e Computacional",},{"name":" Algoritmos Heurísticos","parent": "Inteligência Artificial e Computacional",},{"name":" Computação Evolutiva","parent": "Inteligência Artificial e Computacional"}
+] 
+     },
+
+{
+        "name": "Métodos Formais",
+        "parent": "CC",
+ "children": [
+{"name":"Tipos de Dados Abstratos","parent": "Métodos Formais",},{"name":" Teoria e Modelos de Concorrência","parent": "Métodos Formais",},{"name":"Verificação Formal","parent": "Métodos Formais",},{"name":" Prova Automática de Teoremas","parent": "Métodos Formais",},{"name":" Especificações Baseadas em Modelos","parent": "Métodos Formais"}
+] 
+     },
+
+{
+        "name": "Banco de Dados",
+        "parent": "CC",
+ "children": [
+{"name":"Modelagem e projeto de banco de dados","parent": "Banco de Dados",},{"name":"Bancos de dados relacionais e orientados a objetos","parent": "Banco de Dados",},{"name":" Linguagens de consulta e manipulação de dados","parent": "Banco de Dados",},{"name":"Sistemas Gerenciadores de Bancos de Dados: arquitetura, gerenciamento de transações, controle de concorrência, recuperação, processamento e otimização de consultas","parent": "Banco de Dados",},{"name":" Bancos de dados distribuídos","parent": "Banco de Dados",}
+] 
+     },
+
+{
+        "name": "Computação Gráfica ",
+        "parent": "CC",
+ "children": [
+{"name":"Transformações geométricas em duas e três dimensões","parent": "Computação Gráfica",},{"name":" Recorte e visibilidade","parent": "Computação Gráfica",},{"name":" Transformações projetivas","parent": "Computação Gráfica",},{"name":" Definição de objetos e cenas tridimensionais","parent": "Computação Gráfica",},{"name":" Modelos de iluminação e tonalização (shading)","parent": "Computação Gráfica",},{"name":"Texturas e Mapeamentos","parent": "Computação Gráfica",}
+] 
+     },
+
+{
+        "name": "Processamento de Imagem",
+        "parent": "CC",
+ "children": [
+{"name":"Rasterização e Técnicas de antisserrilhado (antialiasing)","parent": "Processamento de Imagem",},{"name":" Percepção visual humana","parent": "Processamento de Imagem",},{"name":" Amostragem","parent": "Processamento de Imagem",},{"name":" realce","parent": "Processamento de Imagem",},{"name":" filtragem e restauração de imagens; Segmentação de imagens; Compressão e comunicação de imagens; Noções de visão computacional e reconhecimento de padrões","parent": "Processamento de Imagem",} 
+] 
+     },
+
+{
+        "name": "Teoria dos Grafos",
+        "parent": "CC",
+ "children": [
+{"name":" Conceitos Básicos: Grafos e Sub-grafos","parent": "Teoria dos Grafos",},{"name":" Isomorfismo, Matrizes de Adjacência e Incidência, Caminhos e Ciclos","parent": "Teoria dos Grafos",},{"name":" Árvores: Caracterização de Árvores, Cortes de Arestas, Cortes de Vértices","parent": "Teoria dos Grafos",},{"name":" Conectividade: Conectividade de Vértices e Arestas","parent": "Teoria dos Grafos",},{"name":" Ciclos Eulerianos e Hamiltonianos","parent": "Teoria dos Grafos",},{"name":"Emparelhamentos","parent": "Teoria dos Grafos",},{"name":" Coloração de Vértices e de Arestas","parent": "Teoria dos Grafos",},{"name":" Planaridade","parent": "Teoria dos Grafos",}
+] 
+     },
+
+{
+        "name": "Probabilidade e Estatística",
+        "parent": "CC",
+ "children": [
+{"name":" Eventos","parent": "Probabilidade e Estatística",},{"name":" Espaços Amostrais","parent": "Probabilidade e Estatística",},{"name":" Variáveis Aleatórias Discretas e Contínuas, Distribuição de Probabilidade de Variáveis Aleatórias Unidimensionais e Bidimensionais, Esperança Matemática, Variância e Coeficientes de Correlação, Teorema do Limite Central","parent": "Probabilidade e Estatística",},{"name":" Teste de Hipóteses para Médias","parent": "Probabilidade e Estatística",},{"name":"Testes do Qui-quadrado","parent": "Probabilidade e Estatística",},{"name":" Regressão e Correlação","parent": "Probabilidade e Estatística",}
+] 
+     }
+    ]}];
+
+                                                                          
+root = treeData[0];
+root.x0 = 0;
+root.y0 = 0;
+  
+update(root);
+
+d3.select(self.frameElement).style("height", calc_height());
+
+function update(source) {
+  
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root).reverse(),
+	  links = tree.links(nodes);
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+  // Update the nodes…
+  var node = svg.selectAll("g.node")
+	  .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("g")
+	  .attr("class", "node")
+	  .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+	  .on("click", click);
+
+  nodeEnter.append("circle")
+	  .attr("r", 1e-6)
+	  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeEnter.append("text")
+	  .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
+	  .attr("dy", ".35em")
+	  .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+	  .text(function(d) { return d.name; })
+	  .style("fill-opacity", 1e-6);
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+	  .duration(duration)
+	  .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+  nodeUpdate.select("circle")
+	  .attr("r", 10)
+	  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeUpdate.select("text")
+	  .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+	  .duration(duration)
+	  .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+	  .remove();
+
+  nodeExit.select("circle")
+	  .attr("r", 1e-6);
+
+  nodeExit.select("text")
+	  .style("fill-opacity", 1e-6);
+
+  // Update the links…
+  var link = svg.selectAll("path.link")
+	  .data(links, function(d) { return d.target.id; });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("path", "g")
+	  .attr("class", "link")
+	  .attr("d", function(d) {
+		var o = {x: source.x0, y: source.y0};
+		return diagonal({source: o, target: o});
+	  });
+
+  // Transition links to their new position.
+  link.transition()
+	  .duration(duration)
+	  .attr("d", diagonal);
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+	  .duration(duration)
+	  .attr("d", function(d) {
+		var o = {x: source.x, y: source.y};
+		return diagonal({source: o, target: o});
+	  })
+	  .remove();
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+	d.x0 = d.x;
+	d.y0 = d.y;
+  });
+}
+
+// Toggle children on click.
+function click(d) {
+  if (d.children) {
+	d._children = d.children;
+	d.children = null;
+	count_closed++;
+  } else {
+	d.children = d._children;
+	d._children = null;
+	count_closed--;
+  }
+  update(d);
+}
+
+</script>
+	
+  </body>
+</html>
